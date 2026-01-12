@@ -1,71 +1,83 @@
-import React, { createContext, useState, useEffect, useContext } from "react";
+
+
+
+import React, { createContext, useState, useEffect } from "react";
+import toast from "react-hot-toast";
 
 export const CartContext = createContext();
 
 const CartProvider = ({ children }) => {
-  // cart state
   const [cart, setCart] = useState([]);
-  // item amount state
   const [itemAmount, setItemAmount] = useState(0);
-  // total price state
   const [total, setTotal] = useState(0);
 
+  // Update item amount
+  useEffect(() => {
+    const amount = cart.reduce((accumulator, currentItem) => {
+      return accumulator + currentItem.amount;
+    }, 0);
+    setItemAmount(amount);
+  }, [cart]);
+
+  // Update total price
   useEffect(() => {
     const total = cart.reduce((accumulator, currentItem) => {
       return accumulator + currentItem.price * currentItem.amount;
     }, 0);
     setTotal(total);
-  });
-
-  // update item amount
-  useEffect(() => {
-    if (cart) {
-      const amount = cart.reduce((accumulator, currentItem) => {
-        return accumulator + currentItem.amount;
-      }, 0);
-      setItemAmount(amount);
-    }
   }, [cart]);
 
-  // add to cart
+  // Add to cart with toast notification
   const addToCart = (product, id) => {
     const newItem = { ...product, amount: 1 };
-    // check if the item is already in the cart
-    const cartItem = cart.find((item) => {
-      return item.id === id;
-    });
+    const cartItem = cart.find((item) => item.id === id);
+
     if (cartItem) {
-      const newCart = [...cart].map((item) => {
+      const newCart = cart.map((item) => {
         if (item.id === id) {
           return { ...item, amount: cartItem.amount + 1 };
-        } else return item;
+        } else {
+          return item;
+        }
       });
       setCart(newCart);
+      toast.success("Item quantity increased!", {
+        duration: 2000,
+        icon: "🛒",
+      });
     } else {
       setCart([...cart, newItem]);
+      toast.success("Item added to cart!", {
+        duration: 2000,
+        icon: "✅",
+      });
     }
   };
 
-  // remove from cart
+  // Remove from cart
   const removeFromCart = (id) => {
-    const newCart = cart.filter((item) => {
-      return item.id !== id;
-    });
+    const newCart = cart.filter((item) => item.id !== id);
     setCart(newCart);
+    toast.error("Item removed from cart", {
+      duration: 2000,
+    });
   };
 
-  // cleart cart
+  // Clear cart
   const clearCart = () => {
     setCart([]);
+    toast.success("Cart cleared!", {
+      duration: 2000,
+    });
   };
 
-  // increase amount
+  // Increase amount
   const increaseAmount = (id) => {
     const cartItem = cart.find((item) => item.id === id);
     addToCart(cartItem, id);
   };
 
-  // decrease amount
+  // Decrease amount
   const decreaseAmount = (id) => {
     const cartItem = cart.find((item) => item.id === id);
     if (cartItem) {

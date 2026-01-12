@@ -1,97 +1,94 @@
 
-
-
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { SidebarContext } from "../contexts/SidebarContext";
 import { CartContext } from "../contexts/CartContext";
-import { Link } from "react-router-dom";
-import Logo from "../img/logo.svg";
+import { useAuth } from "../contexts/AuthContext";
+import { Link, useNavigate } from "react-router-dom";
 import { BsBag } from "react-icons/bs";
+import { Toaster } from "react-hot-toast";
+import Logo from "../img/logo.svg";
+import { useState, useEffect} from "react";
 
 const Header = () => {
-  const [isActive, setIsActive] = useState(false);
-  const [showMsg, setShowMsg] = useState(false);
+    // const [isActive, setIsActive] = useState(false);
 
   const { isOpen, setIsOpen } = useContext(SidebarContext);
   const { itemAmount } = useContext(CartContext);
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    if (itemAmount > 0) {
-      setShowMsg(true);
-      const timer = setTimeout(() => setShowMsg(false), 4000);
-      return () => clearTimeout(timer);
+
+
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate("/");
+    } catch (error) {
+      console.error("Failed to logout", error);
     }
-  }, [itemAmount]);
-
-  // useEffect(() => {
-  //   const handleScroll = () => setIsActive(window.scrollY > 60);
-  //   window.addEventListener("scroll", handleScroll);
-  //   return () => window.removeEventListener("scroll", handleScroll);
-  // }, []);
-
-
-useEffect(() => {
-  const handleScroll = () => setIsActive(window.scrollY > 60);
-  window.addEventListener("scroll", handleScroll);
-  return () => window.removeEventListener("scroll", handleScroll); // CLEANUP here!
-}, []);
-
-
-
-
+  };
 
   return (
     <>
-      <header
-        className={`${
-          isActive ? "bg-white py-4 shadow-md" : "bg-none py-6"
-        } fixed w-full z-10 lg:px-8 font-black transition-all`}
-      >
-        <div className="container mx-auto flex items-center justify-between h-full">
-          <Link to={"/"}>
-            <div className="w-[40px] flex items-center gap-x-2">
-              <img src={Logo} alt="" />
-              <h1 className="text-2xl text-black font-semibold">FakeStore</h1>
-            </div>
+      <Toaster position="top-right" reverseOrder={false} />
+      <header 
+      className="bg-white py-4 shadow-md fixed w-full z-50 top-0">
+
+      
+        <div className="container mx-auto flex items-center justify-between px-4">
+          {/* Logo + Title */}
+          <Link to="/" className="flex items-center gap-x-2">
+            <img className="w-[40px]" src={Logo} alt="Logo" />
+            <span className="text-2xl font-bold text-black">FakeStore</span>
           </Link>
-          {/* cart */}
-          <div
-            onClick={() => setIsOpen(!isOpen)}
-            className="cursor-pointer flex relative"
-          > 
-            <BsBag className="text-2xl text-black font-semibold mr-3" />
-           
-            <div className="bg-blue-500 absolute -right-2 -bottom-2 text-[12px] mr-2 w-[18px] h-[18px] text-white rounded-full flex justify-center items-center">
-              {itemAmount}
-            </div>
+
+          {/* Auth & Cart Section */}
+          <div className="flex items-center gap-4">
+            {user ? (
+              <>
+                <span className="text-xl text-gray-900 hidden md:block bg-cyan-500 px-4 py-1 rounded-md border-black border-2">
+                  {/* {user.email} */}
+                 {user.email.split('@')[0]}
+                </span>
+                <button
+                  onClick={handleLogout}
+                  className="px-4 py-2 bg-black text-white text-sm rounded-md hover:bg-gray-800 transition"
+                >
+                  Logout
+                </button>
+                {/* Cart Icon ONLY after login */}
+                <div
+                  onClick={() => setIsOpen(!isOpen)}
+                  className="cursor-pointer relative"
+                >
+                  <BsBag className="text-2xl" />
+                  <div className="bg-red-500 absolute -right-2 -bottom-2 text-[12px] w-[18px] h-[18px] text-white rounded-full flex justify-center items-center">
+                    {itemAmount}
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Link
+                  to="/login"
+                  className="px-4 py-2 bg-white text-black hover:bg-cyan-500 text-xl border border-gray-700 rounded-md  transition"
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/signup"
+                  className="px-4 py-2 bg-black text-white text-xl border-[4px] rounded-lg hover:bg-gray-800 transition"
+                >
+                  Sign Up
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </header>
-      {/* Tailwind animated notification */}
-      {showMsg && (
-        <div className="fixed top-20 right-6 z-[999] text-white font-semibold rounded-lg shadow-lg px-7 py-3 bg-green-500 animate-slide-down">
-          Item added to cart!
-        </div>
-      )}
-      {/* Tailwind CSS for the animation */}
-      <style>
-        {`
-          .animate-slide-down {
-            animation: slide-down 0.3s cubic-bezier(.7,.5,.3,1.5);
-            animation-delay: 0s;
-          }
-          @keyframes slide-down {
-            0% { opacity:0; transform:translateY(-20px);}
-            100% { opacity:1; transform:translateY(0);}
-          }
-        `}
-      </style>
     </>
   );
 };
 
 export default Header;
-
-
-
-
