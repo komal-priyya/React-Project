@@ -1,63 +1,39 @@
-// import React from "react";
-// import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-
-// import Home from "./pages/Home";
-// import ProductDetails from "./pages/ProductDetails";
-
-// import Sidebar from "./components/Sidebar";
-// import Header from "./components/Header";
-// import Footer from "./components/Footer";
-// import Payment from "./components/Payment";
-
-// const App = () => {
-//   return (
-//     <div className="overflow-hidden">
-//       <Router>
-//         <Header />
-//         <Routes>
-//           <Route path="/" element={<Home />}></Route>
-//           <Route path="/product/:id" element={<ProductDetails />}></Route>
-//                     <Route path="/Payment" element={<Payment />} />
-
-//         </Routes>
-//         <Sidebar />
-//         <Footer />
-//       </Router>
-//     </div>
-//   );
-// };
 
 
-// export default App;
-
-import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-
+import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import ProductDetails from "./pages/ProductDetails";
-import Product from "./components/Product";
-import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
+import Sidebar from "./components/Sidebar";
 import Footer from "./components/Footer";
+import ProductProvider from "./contexts/ProductContext";
+import SidebarProvider from "./contexts/SidebarContext";
+import CartProvider from "./contexts/CartContext";
+import { AuthProvider } from "./contexts/AuthContext";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 import Payment from "./components/Payment";
 
-const App = () => {
-  return (
-    <div className="overflow-hidden">
-      <Router>
-        <Header />
-        <Sidebar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-            <Route path="/products" element={<Product />} />
-          <Route path="/product/:id" element={<ProductDetails />} />
-          <Route path="/Payment" element={<Payment />} />
-        </Routes>
-        
-        <Footer />
-      </Router>
-    </div>
-  );
-};
+const App = () => (
+  <AuthProvider>
+    <ProductProvider>
+      <SidebarProvider>
+        <CartProvider>
+          <Header />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/product/:id" element={<ProductDetails />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="payment" element={<Payment/>}/>
+          </Routes>
+          <Sidebar />
+          <Footer />
+        </CartProvider>
+      </SidebarProvider>
+    </ProductProvider>
+  </AuthProvider>
+);
 
 export default App;
+
