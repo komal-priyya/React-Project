@@ -16,7 +16,7 @@ const Product = ({ product }) => {
   };
 
   return (
-    <div 
+    <div
       className="
         group 
         relative 
@@ -44,7 +44,7 @@ const Product = ({ product }) => {
           src={image}
           alt={title}
         />
-        
+
         {/* Action Buttons */}
         <div className="absolute top-3 right-3 flex gap-2 z-50">
           <button
@@ -86,7 +86,7 @@ const Product = ({ product }) => {
             <BsEyeFill className="text-lg" />
           </div>
         </div>
-        
+
         {/* Category Badge */}
         {category && (
           <div className="absolute top-3 left-3 z-40">
@@ -114,13 +114,13 @@ font-medium  text-gray-700 capitalize border border-gray-200
             {title}
           </h3>
         </Link>
-        
+
         {/* Price and Cart Button Row */}
         <div className="flex items-center justify-between pt-2">
           <span className="text-xl font-semibold text-gray-900">
             ${price.toFixed(2)}
           </span>
-          
+
           <button
             onClick={handleAddToCart}
             type="button"

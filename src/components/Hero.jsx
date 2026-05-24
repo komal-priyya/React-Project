@@ -35,10 +35,10 @@ const Hero = () => {
         {/* Text Section */}
         <div className="text-white max-w-xl space-y-6 md:space-y-8 py-8 md:py-0">
           <div
-            className="font-semibold flex items-center text-lg md:text-xl uppercase tracking-widest"
+            className="font-semibold flex items-center mt-3 text-lg md:text-xl uppercase tracking-widest"
             data-aos="fade-right"
           >
-            <div className="w-8 h-1 rounded-full mr-4 bg-cyan-500" />
+            <div className="w-8 h-1 rounded-full mr-3 mt-2 bg-cyan-500" />
             Hot Trend
           </div>
           <h1
