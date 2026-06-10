@@ -26,4 +26,6 @@ dist-ssr
 .env example
 .firebase/
 .vercel.json
-
+.env
+.env.local
+.env.*
