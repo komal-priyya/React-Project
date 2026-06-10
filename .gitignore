@@ -29,5 +29,5 @@ dist-ssr
 .env
 .env.local
 .env.*
-.vercel.json
+vercel.json
 
